@@ -1,6 +1,6 @@
 import json
 
-# JSON文件和输出TXT文件的路径
+
 json_file_path = '/Users/liyangke/Documents/Programs/mresproj/split/senpai/test.json'
 output_file_path = '/Users/liyangke/Documents/Programs/mresproj/split/senpai/test.txt'
 
