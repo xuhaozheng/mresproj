@@ -70,32 +70,3 @@ def load_paths_and_labels(txt_file):
 
 
 
-transform = transforms.Compose([
-    GBMTransform(),  
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(10),
-])
-
-
-file_paths, labels = load_paths_and_labels("split/senpai/1.txt")
-
-dataset = GBMDataset(file_paths, labels, transform=transform)
-dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
-
-import matplotlib.pyplot as plt
-import torch
-
-
-for images, labels in dataloader:
-
-    image_to_show = images[0].numpy()
-    
-
-    if image_to_show.shape[0] == 1:  
-        image_to_show = image_to_show.squeeze(0) 
-    
-    plt.imshow(image_to_show, cmap='gray')  
-    plt.title(f"Label: {labels[0]}")  
-    plt.show()
-
-    break
