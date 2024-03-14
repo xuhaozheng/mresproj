@@ -7,7 +7,7 @@ from utils import GBMDataset, GBMTransform, load_paths_and_labels, get_device
 from models import ViTS16
 
 
-model_weights_path = "checkpoints/session_2024-03-09_16-54-48/model_epoch_82_best.pth"
+model_weights_path = "/home/neuralmaster/Desktop/MRes/YKLi/mresproj/checkpoints/ViT/model_epoch_82_best.pth"
 
 test_file_paths, test_labels = load_paths_and_labels("data/split/senpai/test.txt")
 
