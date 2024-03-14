@@ -2,13 +2,6 @@ import torch
 import os
 from datetime import datetime
 
-def get_device():
-    if torch.backends.mps.is_available():  # 检查是否支持Apple Metal
-        return torch.device("mps")
-    elif torch.cuda.is_available():  # 检查CUDA是否可用
-        return torch.device("cuda")
-    else:
-        return torch.device("cpu")
     
 
 def create_training_session_folder(root_dir="checkpoints"):
@@ -18,9 +11,15 @@ def create_training_session_folder(root_dir="checkpoints"):
     os.makedirs(session_folder)
     return session_folder
 
-def save_model_state(model, epoch, save_dir):
+def save_model(model, epoch, save_dir):
     filename = f"model_epoch_{epoch+1}.pth"
     save_path = os.path.join(save_dir, filename)
     torch.save(model.state_dict(), save_path)
+
+def save_log(msg, session_folder):
+    log_file = os.path.join(session_folder, 'log.txt')
+    print(msg)
+    with open(log_file, 'a') as f:
+        f.write(msg + '\n')
 
 

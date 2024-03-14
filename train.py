@@ -1,10 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 from torchvision import transforms
 
-from utils import GBMDataset,GBMTransform,load_paths_and_labels,get_device
 from utils import *
 from models import ViTB16,ViTS16
 
@@ -31,10 +30,13 @@ test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
 device = get_device()
 
-model = ViTB16().to(device)
+model = ViTS16().to(device)
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.AdamW(model.parameters(), lr=0.05)
+scheduler = create_scheduler(optimizer)
+
+
 
 #AdamW 0.05 learning rate
 #cos learing scal warmup epoch:10 initial learning rate 10-6 base learning rate 10-3 min learning rate 10-5
@@ -51,7 +53,7 @@ import time
 
 
 
-num_epochs = 10
+num_epochs = 100
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
@@ -60,7 +62,7 @@ for epoch in range(num_epochs):
 
     start_time = time.time()
     
-    print(f"Epoch {epoch+1}/{num_epochs} started...")
+    save_log(f"Epoch {epoch+1}/{num_epochs} started...", session_folder)
 
     for batch_idx, (images, labels) in enumerate(train_loader):
         images = images.to(device)
@@ -87,23 +89,29 @@ for epoch in range(num_epochs):
             time_per_batch = elapsed_time / (batch_idx + 1)
             remaining_time = batches_left * time_per_batch
 
-            print(f'Epoch: {epoch+1}, Batch: {batch_idx}, Loss: {loss.item()}, '
-                  f'Elapsed Time: {elapsed_time:.2f}s, Remaining Time: {remaining_time:.2f}s')
+            save_log(f'Epoch: {epoch+1}, Batch: {batch_idx}, Loss: {loss.item()}, '
+                  f'Elapsed Time: {elapsed_time:.2f}s, Remaining Time: {remaining_time:.2f}s', session_folder)
     
     epoch_loss = running_loss / len(train_loader)
     epoch_acc = 100 * correct / total
     total_time = time.time() - start_time
 
-    print(f'Epoch {epoch+1} Finished, Loss: {epoch_loss}, Accuracy: {epoch_acc}%, '
-          f'Total Time: {total_time:.2f}s\n')
+    scheduler.step()  # 在每个epoch结束时更新学习率
+
+    current_lr = optimizer.param_groups[0]["lr"]
+    
+    save_log(f"Epoch {epoch+1} Finished, Loss: {epoch_loss}, Accuracy: {epoch_acc}%, "
+                f"Learning Rate: {current_lr}, Total Time: {total_time:.2f}s\n", session_folder)
+
+    save_log(f'Epoch {epoch+1} Finished, Loss: {epoch_loss}, Accuracy: {epoch_acc}%, '
+          f'Total Time: {total_time:.2f}s\n', session_folder)
 
 
 
     
-    # 保存模型状态
-    save_model_state(model, epoch, session_folder)
 
-    # 验证阶段
+    save_model(model, epoch, session_folder)
+
     model.eval()
     correct = 0
     total = 0
@@ -115,7 +123,7 @@ for epoch in range(num_epochs):
             _, predicted = torch.max(outputs.logits, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
-    print(f"Validation Accuracy: {100 * correct / total}%")
+    save_log(f"Validation Accuracy: {100 * correct / total}%", session_folder)
 
-print("Training Complete")
+save_log("Training Complete", session_folder)
 

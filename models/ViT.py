@@ -5,7 +5,6 @@ class ViTB16(torch.nn.Module):
     def __init__(self, num_labels=2):
         super(ViTB16, self).__init__()
         configuration = ViTConfig.from_pretrained("google/vit-base-patch16-224-in21k", num_labels=num_labels)
-        
         self.vit = ViTForImageClassification(configuration)
 
     def forward(self, pixel_values):
@@ -14,8 +13,7 @@ class ViTB16(torch.nn.Module):
 class ViTS16(torch.nn.Module):
     def __init__(self, num_labels=2):
         super(ViTS16, self).__init__()
-        configuration = ViTConfig.from_pretrained("google/vit-small-patch16-224", num_labels=num_labels)
-        
+        configuration = ViTConfig.from_pretrained("WinKawaks/vit-small-patch16-224", num_labels=num_labels) 
         self.vit = ViTForImageClassification(configuration)
 
     def forward(self, pixel_values):

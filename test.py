@@ -4,10 +4,10 @@ from torchvision import transforms
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
 from utils import GBMDataset, GBMTransform, load_paths_and_labels, get_device
-from models import ViTB16
+from models import ViTS16
 
 
-model_weights_path = "/Users/liyangke/Documents/Programs/mresproj/checkpoints/session_2024-03-07_22-17-01/model_epoch_10.pth"
+model_weights_path = "checkpoints/session_2024-03-09_16-54-48/model_epoch_82_best.pth"
 
 test_file_paths, test_labels = load_paths_and_labels("data/split/senpai/test.txt")
 
@@ -21,7 +21,7 @@ test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
 device = get_device()
 
-model = ViTB16().to(device)
+model = ViTS16().to(device)
 model.load_state_dict(torch.load(model_weights_path, map_location=device))
 model.eval()
 

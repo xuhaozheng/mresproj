@@ -21,8 +21,10 @@ class GBMDataset(Dataset):
         return image, label
 
 class GBMTransform(object):
-    def __init__(self, output_size=224):
+    def __init__(self, output_size=224, mean=0.5, std=0.5):
         self.output_size = output_size
+        self.mean = mean
+        self.std = std
 
     def __call__(self, img):
         img = transforms.functional.to_tensor(img)
@@ -46,6 +48,8 @@ class GBMTransform(object):
         
 
         img = img * mask.float().unsqueeze(0) 
+
+        img = transforms.functional.normalize(img, [self.mean], [self.std])
 
         return img
 
