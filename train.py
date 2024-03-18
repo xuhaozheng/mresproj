@@ -14,7 +14,11 @@ train_transform = transforms.Compose([
     GBMTransform(),  
     transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(10),
-    transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
+    transforms.Lambda(lambda x: x.repeat(3, 1, 1)),  # 重复通道
+    transforms.RandomAffine(degrees=15, translate=(0.1, 0.1), scale=(0.9, 1.1), shear=10),  # 仿射变换
+    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),  # 颜色抖动
+    transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0, inplace=False),  # 随机擦除
+    transforms.Lambda(lambda x: x if torch.rand(1) > 0.5 else -x + 1)  # 50%概率随机反转
 ])
 
 test_transform = transforms.Compose([
