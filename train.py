@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from utils import *
-from models import ViTB16,ViTS16
+from models import ViTB16,ViTS16,FocalNet
 
 train_file_paths, train_labels = load_paths_and_labels("data/split/senpai/train.txt")
 test_file_paths, test_labels = load_paths_and_labels("data/split/senpai/test.txt")
@@ -34,7 +34,9 @@ test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
 device = get_device()
 
-model = ViTS16().to(device)
+#use different model here
+#model = ViTS16().to(device)
+model = FocalNet().to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.AdamW(model.parameters(), lr=0.05)
@@ -42,8 +44,7 @@ scheduler = create_scheduler(optimizer)
 
 
 
-#AdamW 0.05 learning rate
-#cos learing scal warmup epoch:10 initial learning rate 10-6 base learning rate 10-3 min learning rate 10-5
+
 #6 radom seed
 
 session_folder = create_training_session_folder()
