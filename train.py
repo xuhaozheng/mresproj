@@ -77,7 +77,9 @@ for epoch in range(num_epochs):
 
         # 获取模型的输出
         outputs = model(images)
-        logits = outputs.logits
+        #change here if model change
+        #logits = outputs.logits
+        logits = outputs
         loss = criterion(logits, labels)
 
         loss.backward()
