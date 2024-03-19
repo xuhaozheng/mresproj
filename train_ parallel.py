@@ -6,6 +6,7 @@ from torchvision import transforms
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 import time
+import os
 
 from utils import *
 from models import ViTB16, ViTS16, FocalNet
@@ -129,4 +130,6 @@ def main(rank, world_size):
 
 if __name__ == "__main__":
     world_size = 2  # 假设您有2个GPU
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
     torch.multiprocessing.spawn(main, args=(world_size,), nprocs=world_size, join=True)
