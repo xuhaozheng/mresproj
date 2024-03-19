@@ -81,8 +81,6 @@ def main(rank, world_size):
                 remaining_time = avg_time_per_batch * batches_left  # 剩余时间
                 
                 if rank == 0:
-                    print(f'Epoch: {epoch+1}, Batch: {batch_idx}/{total_batches}, Loss: {loss.item():.4f}, '
-                          f'Elapsed Time: {elapsed_time:.2f}s, Remaining Time: {remaining_time:.2f}s')
                     save_log(f'Epoch: {epoch+1}, Batch: {batch_idx}/{total_batches}, Loss: {loss.item():.4f}, '
                              f'Elapsed Time: {elapsed_time:.2f}s, Remaining Time: {remaining_time:.2f}s', session_folder)
         
